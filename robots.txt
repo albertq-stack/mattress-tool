@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.foamvshybrid.com/sitemap.xml
+
+# Disallow (if needed in future)
+# Disallow: /admin/
+# Disallow: /private/
+
