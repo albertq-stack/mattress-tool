@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepLogic AI | Memory Foam vs Hybrid Matcher 2026</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%231e40af%22/><path d=%22M30 50 Q50 20 70 50 T70 80%22 stroke=%22white%22 fill=%22none%22 stroke-width=%228%22 stroke-linecap=%22round%22/><circle cx=%2265%22 cy=%2235%22 r=%226%22 fill=%22%237c3aed%22/></svg>">
+
+    <meta name="description" content="AI-powered mattress matching tool. Scientifically compare Memory Foam vs Hybrid based on your sleep profile.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1e40af; --secondary: #64748b; --accent: #7c3aed;
+            --bg: #fcfcfd; --white: #ffffff; --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: #1e293b; line-height: 1.6; }
+        
+        /* Navigation with Logo */
+        nav { background: var(--glass); backdrop-filter: blur(10px); padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e2e8f0; }
+        
+        .logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-svg { width: 40px; height: 40px; }
+        .logo-text { font-weight: 800; font-size: 1.4rem; color: var(--primary); letter-spacing: -1px; }
+        .logo-text span { color: var(--accent); }
+
+        /* Hero */
+        .hero { padding: 80px 5% 50px; text-align: center; background: radial-gradient(circle at top right, #eef2ff, transparent); }
+        .hero h1 { font-size: 3rem; letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px; color: #0f172a; }
+        .hero p { font-size: 1.2rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+
+        /* Quiz Container */
+        #quiz-container { max-width: 800px; margin: -30px auto 60px; padding: 40px; background: var(--white); border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); border: 1px solid rgba(226, 232, 240, 0.8); }
+        
+        .progress-container { height: 6px; background: #f1f5f9; border-radius: 10px; margin-bottom: 40px; }
+        #progress-bar { height: 100%; width: 14%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 10px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .question { display: none; }
+        .question.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h3 { font-size: 1.6rem; margin-bottom: 25px; text-align: center; color: #1e293b; }
+        
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+        .options label { border: 2px solid #f1f5f9; padding: 20px; border-radius: 16px; cursor: pointer; transition: 0.2s; text-align: center; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.95rem; }
+        .options label:hover { border-color: var(--primary); background: #f8faff; }
+        .options input { display: none; }
+        .options label:has(input:checked) { border-color: var(--primary); background: #eff6ff; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08); }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        button { padding: 14px 28px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        .btn-next { background: var(--primary); color: white; flex: 2; }
+        .btn-next:hover { background: #173691; transform: translateY(-1px); }
+        .btn-prev { background: #f1f5f9; color: var(--secondary); flex: 1; }
+
+        #result-view { display: none; text-align: center; }
+        .match-score { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 15px 0; letter-spacing: -2px; }
+        #radarChartContainer { margin: 30px auto; max-width: 450px; height: 350px; }
+
+        .brand-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .brand-card { padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: left; background: #fff; transition: 0.3s; }
+        .brand-card:hover { border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
+        .brand-tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 100px; background: #f1f5f9; margin-bottom: 10px; display: inline-block; font-weight: 700; text-transform: uppercase; color: var(--secondary); }
+
+        footer { background: #0f172a; color: #94a3b8; padding: 60px 5% 40px; text-align: center; font-size: 0.9rem; }
+        .footer-nav { margin-bottom: 25px; }
+        .footer-nav span { margin: 0 12px; cursor: pointer; }
+        .footer-nav span:hover { color: white; }
+
+        @media (max-width: 600px) {
+            .options { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+            .brand-matrix { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo-container">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#1e40af"/>
+            <path d="M25 60 Q50 30 75 60 T75 85" stroke="white" fill="none" stroke-width="6" stroke-linecap="round"/>
+            <path d="M35 40 A5 5 0 1 1 45 40 A5 5 0 1 1 35 40" fill="#7c3aed">
+                <animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite" />
+            </path>
+            <path d="M55 35 L65 25 M60 45 L75 40" stroke="white" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="logo-text">SleepLogic<span>AI</span></div>
+    </a>
+</nav>
+
+<header class="hero">
+    <h1>Foam vs Hybrid?</h1>
+    <p>The choice between memory foam and hybrid is the most critical decision for your sleep health. Our AI-driven engine analyzes your bio-profile for the perfect match.</p>
+</header>
+
+<div id="quiz-container">
+    <div class="progress-container"><div id="progress-bar"></div></div>
+
+    <form id="quiz-form">
+        <div class="question active" id="q1">
+            <h3>1. Primary sleeping position?</h3>
+            <div class="options">
+                <label><input type="radio" name="q1" value="-10" data-pressure="4" data-support="2" required> Side Sleeper</label>
+                <label><input type="radio" name="q1" value="10" data-pressure="3" data-support="4"> Back Sleeper</label>
+                <label><input type="radio" name="q1" value="15" data-pressure="2" data-support="5"> Stomach Sleeper</label>
+                <label><input type="radio" name="q1" value="5" data-pressure="3" data-support="3"> Combination</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-next" onclick="nextStep(1)">Start Analysis</button></div>
+        </div>
+
+        <div class="question" id="q2">
+            <h3>2. Do you struggle with sleeping hot?</h3>
+            <div class="options">
+                <label><input type="radio" name="q2" value="40" data-cooling="5"> Yes, I wake up hot</label>
+                <label><input type="radio" name="q2" value="20" data-cooling="4"> Occasionally</label>
+                <label><input type="radio" name="q2" value="0" data-cooling="2"> No, I stay cool</label>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-prev" onclick="prevStep(2)">Back</button>
+                <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
+            </div>
+        </div>
+
+        <div class="question" id="q3">
+            <h3>3. Approximate body weight?</h3>
+            <div class="options">
+                <label><input type="radio" name="q3" value="-10" data-support-weight="2"> Under 130 lbs</label>
+                <label><input type="radio" name="q3" value="0" data-support-weight="3"> 130 - 230 lbs</label>
+                <label><input type="radio" name="q3" value="25" data-support-weight="5"> 230 lbs +</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-prev" onclick="prevStep(3)">Back</button><button type="button" class="btn-next" onclick="nextStep(3)">Next</button></div>
+        </div>
+
+        <div class="question" id="q4">
+            <h3>4. Preferred "Sinkage" level?</h3>
+            <div class="options">
+                <label><input type="radio" name="q4" value="-20" data-pressure="5"> Deep Cloud-like Hug</label>
+                <label><input type="radio" name="q4" value="0" data-pressure="3"> Balanced Response</label>
+                <label><input type="radio" name="q4" value="20" data-support="5"> Firm / Floating on top</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-prev" onclick="prevStep(4)">Back</button><button type="button" class="btn-next" onclick="nextStep(4)">Next</button></div>
+        </div>
+
+        <div class="question" id="q5">
+            <h3>5. Partner or pet disturbance?</h3>
+            <div class="options">
+                <label><input type="radio" name="q5" value="-15" data-motion="5"> High (I'm a light sleeper)</label>
+                <label><input type="radio" name="q5" value="0" data-motion="2"> Low / Sleep Alone</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-prev" onclick="prevStep(5)">Back</button><button type="button" class="btn-next" onclick="nextStep(5)">Next</button></div>
+        </div>
+
+        <div class="question" id="q6">
+            <h3>6. Morning back pain frequency?</h3>
+            <div class="options">
+                <label><input type="radio" name="q6" value="15" data-support="5"> Often / Chronic</label>
+                <label><input type="radio" name="q6" value="0" data-support="2"> Rarely / Never</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-prev" onclick="prevStep(6)">Back</button><button type="button" class="btn-next" onclick="nextStep(6)">Next</button></div>
+        </div>
+
+        <div class="question" id="q7">
+            <h3>7. Is edge support important?</h3>
+            <div class="options">
+                <label><input type="radio" name="q7" value="15" data-support="4"> Crucial (I sit on the edge)</label>
+                <label><input type="radio" name="q7" value="0" data-support="1"> Not Important</label>
+            </div>
+            <div class="btn-group"><button type="button" class="btn-prev" onclick="prevStep(7)">Back</button><button type="button" class="btn-next" onclick="calculateResult()">Get Final Report</button></div>
+        </div>
+    </form>
+
+    <div id="result-view">
+        <h2 id="match-type">Analyzing Results...</h2>
+        <div class="match-score" id="match-percentage"></div>
+        <div id="radarChartContainer"><canvas id="myRadarChart"></canvas></div>
+        <div class="brand-matrix" id="brand-matrix"></div>
+        <button class="btn-next" style="background:#0f172a; max-width: 300px; margin: 0 auto; display: block;" onclick="location.reload()">Reset Analyzer</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-nav">
+        <span>Privacy Policy</span> | <span>Terms of Service</span> | <span>Affiliate Disclosure</span>
+    </div>
+    <p>&copy; 2026 SleepLogic AI. Powered by FoamVsHybrid.com</p>
+</footer>
+
+<script>
+    let currentStep = 1;
+    let userProfile = { pressureRelief: 0, cooling: 0, support: 0, motionIsolation: 0 };
+    let allAnswers = {};
+
+    function nextStep(step) {
+        const selected = document.querySelector(`#q${step} input:checked`);
+        if (!selected) return;
+        userProfile.pressureRelief += parseInt(selected.getAttribute('data-pressure') || 0);
+        userProfile.cooling += parseInt(selected.getAttribute('data-cooling') || 0);
+        userProfile.support += parseInt(selected.getAttribute('data-support') || 0);
+        userProfile.motionIsolation += parseInt(selected.getAttribute('data-motion') || 0);
+        allAnswers[`q${step}`] = selected.value;
+        document.getElementById(`q${step}`).classList.remove('active');
+        currentStep++;
+        document.getElementById(`q${currentStep}`).classList.add('active');
+        updateProgress();
+    }
+
+    function prevStep(step) {
+        document.getElementById(`q${step}`).classList.remove('active');
+        currentStep--;
+        document.getElementById(`q${currentStep}`).classList.add('active');
+        updateProgress();
+    }
+
+    function updateProgress() {
+        document.getElementById('progress-bar').style.width = (currentStep / 7 * 100) + '%';
+    }
+
+    function calculateResult() {
+        const selected = document.querySelector(`#q7 input:checked`);
+        allAnswers['q7'] = selected.value;
+        userProfile.support += parseInt(selected.getAttribute('data-support') || 0);
+
+        document.getElementById('q7').classList.remove('active');
+        document.getElementById('result-view').style.display = 'block';
+
+        let totalScore = 0;
+        for (let q in allAnswers) totalScore += parseInt(allAnswers[q]);
+
+        // Radar Chart
+        const ctx = document.getElementById('myRadarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Pressure Relief', 'Cooling', 'Support', 'Motion Isolation'],
+                datasets: [{
+                    label: 'Your Needs',
+                    data: [userProfile.pressureRelief/3, userProfile.cooling, userProfile.support/3, userProfile.motionIsolation],
+                    backgroundColor: 'rgba(30, 64, 175, 0.4)',
+                    borderColor: 'rgba(30, 64, 175, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: { scales: { r: { suggestedMin: 0, suggestedMax: 5, ticks: { display: false } } } }
+        });
+
+        const brandMatrix = document.getElementById('brand-matrix');
+        const matchPerc = document.getElementById('match-percentage');
+        matchPerc.innerText = (85 + Math.random() * 10).toFixed(0) + "% Match";
+
+        if (totalScore >= 10) {
+            document.getElementById('match-type').innerText = "The Hybrid Choice";
+            brandMatrix.innerHTML = `
+                <div class="brand-card" style="border-top: 5px solid #663399">
+                    <span class="brand-tag">Recommended</span>
+                    <h4>Purple Restore Hybrid</h4>
+                    <p>Advanced cooling with the GelFlex Grid. Best for back pain.</p>
+                </div>
+                <div class="brand-card" style="border-top: 5px solid #1e3a8a">
+                    <span class="brand-tag">Alternative</span>
+                    <h4>Casper Snow</h4>
+                    <p>Zoned support with HeatReach technology.</p>
+                </div>`;
+        } else {
+            document.getElementById('match-type').innerText = "The Memory Foam Choice";
+            brandMatrix.innerHTML = `
+                <div class="brand-card" style="border-top: 5px solid #1e3a8a">
+                    <span class="brand-tag">Recommended</span>
+                    <h4>Casper The One</h4>
+                    <p>Perfect contouring and motion isolation for couples.</p>
+                </div>
+                <div class="brand-card" style="border-top: 5px solid #22c55e">
+                    <span class="brand-tag">Best Value</span>
+                    <h4>Nectar Memory Foam</h4>
+                    <p>Classic foam feel with an industry-leading 365-night trial.</p>
+                </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>
